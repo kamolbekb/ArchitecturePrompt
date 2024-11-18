@@ -21,6 +21,14 @@ public class DatabaseContext : IdentityDbContext<ApplicationUser>
 
 
     public DbSet<TodoItem> TodoItems { get; set; }
+    public DbSet<Employee> Employees { get; set; }
+    public DbSet<Exam> Exams{ get; set; }
+    public DbSet<Group> Groups { get; set; }
+    public DbSet<Room> Rooms { get; set; }
+    public DbSet<Student> Students { get; set; }
+    public DbSet<StudyProcess> StudyProcesses { get; set; }
+    public DbSet<Subject> Subjects { get; set; }
+    public DbSet<Teacher> Teachers { get; set; }
 
     public DbSet<TodoList> TodoLists { get; set; }
 
