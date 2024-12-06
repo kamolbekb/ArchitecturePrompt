@@ -30,6 +30,25 @@ public static class ApplicationDependencyInjection
         services.AddScoped<IWeatherForecastService, WeatherForecastService>();
         services.AddScoped<ITodoListService, TodoListService>();
         services.AddScoped<ITodoItemService, TodoItemService>();
+        services.AddScoped<IContactService, ContactService>();
+        services.AddScoped<IDiaryRecordService, DiaryRecordService>();
+        services.AddScoped<IDiaryService, DiaryService>();
+        services.AddScoped<IEmployeeService, EmployeeService>();
+        services.AddScoped<IExamService, ExamService>();
+        services.AddScoped<IGroupService, GroupService>();
+        services.AddScoped<IGuardianService, GuardianService>();
+        services.AddScoped<IInfoService, InfoService>();
+        services.AddScoped<ILessonService, LessonService>();
+        services.AddScoped<IPersonService, PersonService>();
+        services.AddScoped<IProgramService, ProgramService>();
+        services.AddScoped<IQuestionService, QuestionService>();
+        services.AddScoped<IReviewService, ReviewService>();
+        services.AddScoped<IRoomService, RoomService>();
+        services.AddScoped<IShiftService, ShiftService>();
+        services.AddScoped<IStudentService, StudentService>();
+        services.AddScoped<ISubjectService, SubjectService>();
+        services.AddScoped<ITeacherService, TeacherService>();
+        
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IClaimService, ClaimService>();
         services.AddScoped<ITemplateService, TemplateService>();

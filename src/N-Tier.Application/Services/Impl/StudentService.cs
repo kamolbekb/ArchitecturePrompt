@@ -1,48 +1,79 @@
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using N_Tier.Application.Extensions;
 using N_Tier.Application.Models;
 using N_Tier.Application.Models.Student;
 using N_Tier.Core.Entities;
+using N_Tier.DataAccess.Repositories;
 
 namespace N_Tier.Application.Services.Impl;
 
 public class StudentService : IStudentService
 {
-    public Task<CreateStudentResponseModel> CreateAsync(CreateStudentModel createStudentModel)
+    private readonly IMapper _mapper;
+    private readonly IStudentRepository _studentRepository;
+
+    public StudentService(IMapper mapper, IStudentRepository studentRepository)
     {
-        throw new NotImplementedException();
+        _mapper = mapper;
+        _studentRepository = studentRepository;
     }
 
-    public Task<BaseResponseModel> DeleteAsync(Guid id)
+    public async Task<CreateStudentResponseModel> CreateStudentAsync(CreateStudentModel createStudentModel)
     {
-        throw new NotImplementedException();
+        var student = _mapper.Map<Student>(createStudentModel);
+        var addedStudent = await _studentRepository.InsertAsync(student);
+        return new CreateStudentResponseModel
+        {
+            Id = addedStudent.Id,
+        };
+    }
+    
+    public async Task<Student> GetStudentAsync(Guid studentId)
+    {
+        var storageStudent = await _studentRepository
+            .SelectByIdAsync(studentId);
+
+        return await Task.FromResult(storageStudent);
     }
 
-    public Task<IEnumerable<StudentResponseModel>> GetAllAsync()
+    public async Task<IEnumerable<StudentResponseModel>> GetAllStudentsAsync()
     {
-        throw new NotImplementedException();
+        var students = _studentRepository
+            .SelectAll();
+        return await Task.FromResult(_mapper.Map<IEnumerable<StudentResponseModel>>(students));
     }
 
-    public Task<List<Student>> GetAllWithIQueryableAsync()
+    public Task<PagedResult<StudentResponseModel>> GetAllStudentsAsync(Options options)
     {
-        throw new NotImplementedException();
+        object students = _studentRepository
+            .SelectAll()
+            .ToPagedResultAsync(options);
+        return Task.FromResult<PagedResult<StudentResponseModel>>(_mapper.Map<PagedResult<StudentResponseModel>>(students));
     }
 
-    public List<Student> GetAllWithIEnumerable()
+    public async Task<UpdateStudentResponseModel> UpdateStudentAsync(Guid id, UpdateStudentModel updateStudentModel)
     {
-        throw new NotImplementedException();
+        var student =  _studentRepository.SelectAll().FirstOrDefault(x => x.Id == id);
+        student.Payment = updateStudentModel.Payment;
+        student.DiaryId = updateStudentModel.DiaryId;
+        student.GroupId = updateStudentModel.GroupId;
+        student.GuardianId = updateStudentModel.GuardianId;
+        student.PersonId = updateStudentModel.PersonId;
+        student.ProgramId = updateStudentModel.ProgramId;
+        return new UpdateStudentResponseModel()
+        {
+            Id = (await _studentRepository.UpdateAsync(student)).Id
+        };
     }
 
-    public Task<PagedResult<Student>> GetAllAsync(Options options)
+    public async Task<BaseResponseModel> DeleteStudentAsync(Guid id)
     {
-        throw new NotImplementedException();
-    }
+        var student = _studentRepository.SelectAll()
+            .FirstOrDefault(d => d.Id == id);
+        await _studentRepository.DeleteAsync(student);
+        await _studentRepository.SaveChangesAsync();
+        return new BaseResponseModel();
 
-    public Task<PagedResult<StudentResponseModel>> GetAllDTOAsync(Options options)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<UpdateStudentResponseModel> UpdateAsync(Guid id, UpdateStudentModel updateStudentModel)
-    {
-        throw new NotImplementedException();
     }
 }

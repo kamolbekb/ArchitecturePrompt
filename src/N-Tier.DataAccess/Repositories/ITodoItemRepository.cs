@@ -2,4 +2,4 @@
 
 namespace N_Tier.DataAccess.Repositories;
 
-public interface ITodoItemRepository : IBaseRepository<TodoItem> { }
+public interface ITodoItemRepository : IBaseRepository<TodoItem, Guid> { }

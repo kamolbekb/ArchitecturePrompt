@@ -3,7 +3,7 @@ using N_Tier.DataAccess.Persistence;
 
 namespace N_Tier.DataAccess.Repositories.Impl;
 
-public class TodoListRepository : BaseRepository<TodoList>, ITodoListRepository
+public class TodoListRepository : BaseRepository<TodoList, Guid>, ITodoListRepository
 {
     public TodoListRepository(DatabaseContext context) : base(context) { }
 }

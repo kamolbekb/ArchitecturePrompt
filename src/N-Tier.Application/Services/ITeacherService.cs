@@ -5,14 +5,12 @@ namespace N_Tier.Application.Services;
 
 public interface ITeacherService
 {
-    Task<CreateTeacherResponseModel> CreateAsync(CreateTeacherModel createTeacherModel);
-
-    Task<BaseResponseModel> DeleteAsync(Guid id);
-
-    Task<IEnumerable<TeacherResponseModel>> GetAllAsync();
-    Task<List<Teacher>> GetAllWithIQueryableAsync();
-    List<Teacher> GetAllWithIEnumerable();
-    Task<PagedResult<Teacher>> GetAllAsync(Options options);
-    Task<PagedResult<TeacherResponseModel>> GetAllDTOAsync(Options options);
-    Task<UpdateTeacherResponseModel> UpdateAsync(Guid id, UpdateTeacherModel updateTeacherModel);
+    Task<CreateTeacherResponseModel> CreateTeacherAsync(CreateTeacherModel createTeacherModel);
+    Task<Teacher> GetTeacherAsync(Guid teacherId);
+    Task<IEnumerable<TeacherResponseModel>> GetAllTeachersAsync();
+    //Task<List<Teacher>> GetAllWithIQueryableAsync();
+    //Task<PagedResult<Teacher>> GetAllAsync(Options options);
+    Task<PagedResult<TeacherResponseModel>> GetAllTeachersAsync(Options options);
+    Task<UpdateTeacherResponseModel> UpdateTeacherAsync(Guid id, UpdateTeacherModel updateTeacherModel);
+    Task<BaseResponseModel> DeleteTeacherAsync(Guid id);
 }

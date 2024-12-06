@@ -29,14 +29,14 @@ public class TodoListService : ITodoListService
     {
         var currentUserId = _claimService.GetUserId();
 
-        var todoLists = await _todoListRepository.GetAllAsync(tl => tl.CreatedBy == currentUserId);
+        var todoLists = _todoListRepository.SelectAll();
 
         return _mapper.Map<IEnumerable<TodoListResponseModel>>(todoLists);
     }
 
     public async Task<List<TodoList>> GetAllWithIQueryableAsync()
     {
-        var query = _todoListRepository.GetAll();
+        var query = _todoListRepository.SelectAll();
         foreach (var todoList in query) 
         { 
         }
@@ -49,7 +49,7 @@ public class TodoListService : ITodoListService
 
     public List<TodoList> GetAllWithIEnumerable()
     {
-        var query = _todoListRepository.GetAllAsEnumurable();
+        var query = _todoListRepository.SelectAll();
         query = query.Take(1);
         int count = query.Count();
         var result = query.ToList();
@@ -61,7 +61,7 @@ public class TodoListService : ITodoListService
     {
         var todoList = _mapper.Map<TodoList>(createTodoListModel);
 
-        var addedTodoList = await _todoListRepository.AddAsync(todoList);
+         var addedTodoList = await _todoListRepository.InsertAsync(todoList);
 
         return new CreateTodoListResponseModel
         {
@@ -71,12 +71,12 @@ public class TodoListService : ITodoListService
 
     public async Task<UpdateTodoListResponseModel> UpdateAsync(Guid id, UpdateTodoListModel updateTodoListModel)
     {
-        var todoList = await _todoListRepository.GetFirstAsync(tl => tl.Id == id);
+        var todoList = await _todoListRepository.SelectByIdAsync(id);
 
         var userId = _claimService.GetUserId();
 
-        if (userId != todoList.CreatedBy)
-            throw new BadRequestException("The selected list does not belong to you");
+        // if (userId != todoList.CreatedBy)
+        //     throw new BadRequestException("The selected list does not belong to you");
 
         todoList.Title = updateTodoListModel.Title;
 
@@ -88,7 +88,7 @@ public class TodoListService : ITodoListService
 
     public async Task<BaseResponseModel> DeleteAsync(Guid id)
     {
-        var todoList = await _todoListRepository.GetFirstAsync(tl => tl.Id == id);
+        var todoList = await _todoListRepository.SelectByIdAsync(id);
 
         return new BaseResponseModel
         {
@@ -98,7 +98,7 @@ public class TodoListService : ITodoListService
 
     public async Task<PagedResult<TodoList>> GetAllAsync(Options options)
     {
-        var query = _todoListRepository.GetAll();
+        var query = _todoListRepository.SelectAll();
 
         var result = await query.ToPagedResultAsync(options);
 
@@ -112,7 +112,7 @@ public class TodoListService : ITodoListService
         if (cachedRsult is not null)
             return cachedRsult;
 
-        var query = _todoListRepository.GetAll();
+        var query = _todoListRepository.SelectAll();
 
         var result = await query.ToPagedResultAsync<TodoList, TodoListResponseModel>(options, _mapper);
         var expirationTime = DateTimeOffset.Now.AddMinutes(5.0);

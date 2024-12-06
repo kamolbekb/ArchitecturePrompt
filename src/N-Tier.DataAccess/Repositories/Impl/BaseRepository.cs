@@ -6,59 +6,67 @@ using System.Linq.Expressions;
 
 namespace N_Tier.DataAccess.Repositories.Impl;
 
-public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : BaseEntity
+public class BaseRepository<TEntity, TKey> : IBaseRepository<TEntity, TKey>
+    where TEntity : class
 {
-    protected readonly DatabaseContext Context;
-    protected readonly DbSet<TEntity> DbSet;
+    private readonly DbContext _appDbContext;
 
-    protected BaseRepository(DatabaseContext context)
+    public BaseRepository(DbContext dbContext)=>
+        _appDbContext = dbContext;
+
+    public async ValueTask<TEntity> InsertAsync(
+        TEntity entity)
     {
-        Context = context;
-        DbSet = context.Set<TEntity>();
+        var entityEntry = await _appDbContext
+            .AddAsync<TEntity>(entity);
+
+        await this.SaveChangesAsync();
+
+        return entityEntry.Entity;
     }
 
-    public async Task<TEntity> AddAsync(TEntity entity)
-    {
-        var addedEntity = (await DbSet.AddAsync(entity)).Entity;
-        await Context.SaveChangesAsync();
+    public IQueryable<TEntity> SelectAll() =>
+        _appDbContext.Set<TEntity>();
 
-        return addedEntity;
+    public async ValueTask<TEntity> SelectByIdAsync(TKey id) =>
+        await _appDbContext.Set<TEntity>().FindAsync(id);
+
+    public async ValueTask<TEntity> SelectByIdWithDetailsAsync(
+        Expression<Func<TEntity, bool>> expression,
+        string[] includes = null)
+    {
+        IQueryable<TEntity> entities = this.SelectAll();
+
+        foreach(var include in includes)
+        {
+            entities = entities.Include(include);
+        }
+
+        return await entities.FirstOrDefaultAsync(expression);
     }
 
-    public async Task<TEntity> DeleteAsync(TEntity entity)
+    public async ValueTask<TEntity> UpdateAsync(TEntity entity)
     {
-        var removedEntity = DbSet.Remove(entity).Entity;
-        await Context.SaveChangesAsync();
+        var entityEntry = _appDbContext
+            .Update<TEntity>(entity);
 
-        return removedEntity;
+        await this.SaveChangesAsync();
+
+        return entityEntry.Entity;
     }
 
-    public IEnumerable<TEntity> GetAllAsEnumurable()
+    public async ValueTask<TEntity> DeleteAsync(TEntity entity)
     {
-        return DbSet.AsEnumerable();
+        var entityEntry = _appDbContext
+            .Set<TEntity>()
+            .Remove(entity);
+
+        await this.SaveChangesAsync();
+
+        return entityEntry.Entity;
     }
 
-    public async Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate)
-    {
-        return await DbSet.Where(predicate).ToListAsync();
-    }
-    public IQueryable<TEntity> GetAll() =>
-        DbSet.AsQueryable();
-
-    public async Task<TEntity> GetFirstAsync(Expression<Func<TEntity, bool>> predicate)
-    {
-        var entity = await DbSet.Where(predicate).FirstOrDefaultAsync();
-
-        if (entity == null) throw new ResourceNotFoundException(typeof(TEntity));
-
-        return await DbSet.Where(predicate).FirstOrDefaultAsync();
-    }
-
-    public async Task<TEntity> UpdateAsync(TEntity entity)
-    {
-        DbSet.Update(entity);
-        await Context.SaveChangesAsync();
-
-        return entity;
-    }
+    public async ValueTask<int> SaveChangesAsync()=>    
+        await _appDbContext
+            .SaveChangesAsync();
 }

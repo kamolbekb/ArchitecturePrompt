@@ -3,7 +3,7 @@ using N_Tier.DataAccess.Persistence;
 
 namespace N_Tier.DataAccess.Repositories.Impl;
 
-public class TeacherRepository : BaseRepository<Teacher>, ITeacherRepository
+public class TeacherRepository : BaseRepository<Teacher, Guid>, ITeacherRepository
 {
     public TeacherRepository(DatabaseContext context) : base(context) { }
 }

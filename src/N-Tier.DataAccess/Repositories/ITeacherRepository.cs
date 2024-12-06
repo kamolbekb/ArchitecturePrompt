@@ -2,4 +2,4 @@ using N_Tier.Core.Entities;
 
 namespace N_Tier.DataAccess.Repositories;
 
-public interface ITeacherRepository: IBaseRepository<Teacher> { }
+public interface ITeacherRepository: IBaseRepository<Teacher, Guid> { }

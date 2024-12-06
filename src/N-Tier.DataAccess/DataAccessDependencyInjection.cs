@@ -26,15 +26,25 @@ public static class DataAccessDependencyInjection
     private static void AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<ITodoItemRepository, TodoItemRepository>();
+        services.AddScoped<ITodoListRepository, TodoListRepository>();
         services.AddScoped<IEmployeeRepository, EmployeeRepository>();
         services.AddScoped<IExamRepository, ExamRepository>();
         services.AddScoped<IGroupRepository, GroupRepository>();
         services.AddScoped<IRoomRepository, RoomRepository>();
         services.AddScoped<IStudentRepository, StudentRepository>();
-        services.AddScoped<IStudyProcessRepository, StudyProcessRepository>();
+        services.AddScoped<ILessonRepository, LessonRepository>();
         services.AddScoped<ISubjectRepository, SubjectRepository>();
         services.AddScoped<ITeacherRepository, TeacherRepository>();
-        services.AddScoped<ITodoListRepository, TodoListRepository>();
+        services.AddScoped<IContactRepository, ContactRepository>();
+        services.AddScoped<IDiaryRepository, DiaryRepository>();
+        services.AddScoped<IDiaryRecordRepository, DiaryRecordRepository>();
+        services.AddScoped<IGuardianRepository, GuardianRepository>();
+        services.AddScoped<IInfoRepository, InfoRepository>();
+        services.AddScoped<IPersonRepository, PersonRepository>();
+        services.AddScoped<IProgramRepository, ProgramRepository>();
+        services.AddScoped<IQuestionRepository, QuestionRepository>();
+        services.AddScoped<IReviewRepository, ReviewRepository>();
+        services.AddScoped<IShiftRepository, ShiftRepository>();
     }
 
     private static void AddDatabase(this IServiceCollection services, IConfiguration configuration)

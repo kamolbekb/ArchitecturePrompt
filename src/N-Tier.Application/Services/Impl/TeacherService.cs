@@ -1,48 +1,75 @@
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using N_Tier.Application.Extensions;
 using N_Tier.Application.Models;
 using N_Tier.Application.Models.Teacher;
 using N_Tier.Core.Entities;
+using N_Tier.DataAccess.Repositories;
 
 namespace N_Tier.Application.Services.Impl;
 
 public class TeacherService : ITeacherService
 {
-    public Task<CreateTeacherResponseModel> CreateAsync(CreateTeacherModel createTeacherModel)
+    private readonly IMapper _mapper;
+    private readonly ITeacherRepository _teacherRepository;
+
+    public TeacherService(IMapper mapper, ITeacherRepository teacherRepository)
     {
-        throw new NotImplementedException();
+        _mapper = mapper;
+        _teacherRepository = teacherRepository;
     }
 
-    public Task<BaseResponseModel> DeleteAsync(Guid id)
+    public async Task<CreateTeacherResponseModel> CreateTeacherAsync(CreateTeacherModel createTeacherModel)
     {
-        throw new NotImplementedException();
+        var teacher = _mapper.Map<Teacher>(createTeacherModel);
+        var addedTeacher = await _teacherRepository.InsertAsync(teacher);
+        return new CreateTeacherResponseModel
+        {
+            Id = addedTeacher.Id,
+        };
+    }
+    
+    public async Task<Teacher> GetTeacherAsync(Guid teacherId)
+    {
+        var storageTeacher = await _teacherRepository
+            .SelectByIdAsync(teacherId);
+
+        return await Task.FromResult(storageTeacher);
     }
 
-    public Task<IEnumerable<TeacherResponseModel>> GetAllAsync()
+    public async Task<IEnumerable<TeacherResponseModel>> GetAllTeachersAsync()
     {
-        throw new NotImplementedException();
+        var teachers = _teacherRepository
+            .SelectAll();
+        return await Task.FromResult(_mapper.Map<IEnumerable<TeacherResponseModel>>(teachers));
     }
 
-    public Task<List<Teacher>> GetAllWithIQueryableAsync()
+    public Task<PagedResult<TeacherResponseModel>> GetAllTeachersAsync(Options options)
     {
-        throw new NotImplementedException();
+        object teachers = _teacherRepository
+            .SelectAll()
+            .ToPagedResultAsync(options);
+        return Task.FromResult<PagedResult<TeacherResponseModel>>(_mapper.Map<PagedResult<TeacherResponseModel>>(teachers));
     }
 
-    public List<Teacher> GetAllWithIEnumerable()
+    public async Task<UpdateTeacherResponseModel> UpdateTeacherAsync(Guid id, UpdateTeacherModel updateTeacherModel)
     {
-        throw new NotImplementedException();
+        var teacher =  _teacherRepository.SelectAll().FirstOrDefault(x => x.Id == id);
+        teacher.EmployeeId = updateTeacherModel.EmployeeId;
+        teacher.SubjectId = updateTeacherModel.SubjectId;
+        return new UpdateTeacherResponseModel()
+        {
+            Id = (await _teacherRepository.UpdateAsync(teacher)).Id
+        };
     }
 
-    public Task<PagedResult<Teacher>> GetAllAsync(Options options)
+    public async Task<BaseResponseModel> DeleteTeacherAsync(Guid id)
     {
-        throw new NotImplementedException();
-    }
+        var teacher = _teacherRepository.SelectAll()
+            .FirstOrDefault(d => d.Id == id);
+        await _teacherRepository.DeleteAsync(teacher);
+        await _teacherRepository.SaveChangesAsync();
+        return new BaseResponseModel();
 
-    public Task<PagedResult<TeacherResponseModel>> GetAllDTOAsync(Options options)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<UpdateTeacherResponseModel> UpdateAsync(Guid id, UpdateTeacherModel updateTeacherModel)
-    {
-        throw new NotImplementedException();
     }
 }

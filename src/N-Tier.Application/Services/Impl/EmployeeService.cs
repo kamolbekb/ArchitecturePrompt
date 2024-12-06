@@ -1,48 +1,83 @@
+using AutoMapper;
+using Microsoft.Extensions.Caching.Memory;
+using N_Tier.Application.Extensions;
 using N_Tier.Application.Models;
 using N_Tier.Application.Models.Employee;
 using N_Tier.Core.Entities;
+using N_Tier.DataAccess.Repositories;
+using N_Tier.Shared.Services;
 
 namespace N_Tier.Application.Services.Impl;
 
 public class EmployeeService : IEmployeeService
 {
-    public Task<CreateEmployeeResponseModel> CreateAsync(CreateEmployeeModel createEmployeeModel)
+    //private readonly IClaimService _claimService;
+    private readonly IMapper _mapper;
+    private readonly IEmployeeRepository _employeeRepository;
+    private readonly IPersonService _personService;
+
+    public EmployeeService(IMapper mapper, IEmployeeRepository employeeRepository)
     {
-        throw new NotImplementedException();
+        _mapper = mapper;
+        _employeeRepository = employeeRepository;
     }
 
-    public Task<BaseResponseModel> DeleteAsync(Guid id)
+    public async Task<CreateEmployeeResponseModel> CreateEmployeeAsync(CreateEmployeeModel createEmployeeModel)
     {
-        throw new NotImplementedException();
+        var employee = _mapper.Map<Employee>(createEmployeeModel);
+        var addedEmployee = await _employeeRepository.InsertAsync(employee);
+        return new CreateEmployeeResponseModel
+        {
+            Id = addedEmployee.Id,
+        };
+    }
+    
+    public async Task<Employee> GetEmployeeAsync(Guid employeeId)
+    {
+        var storageEmployee = await _employeeRepository
+            .SelectByIdAsync(employeeId);
+
+        return await Task.FromResult(storageEmployee);
     }
 
-    public Task<IEnumerable<EmployeeResponseModel>> GetAllAsync()
+    public async Task<IEnumerable<EmployeeResponseModel>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        var employees = _employeeRepository
+            .SelectAll();
+        return await Task.FromResult(_mapper.Map<IEnumerable<EmployeeResponseModel>>(employees));
     }
 
-    public Task<List<Employee>> GetAllWithIQueryableAsync()
+    public Task<PagedResult<EmployeeResponseModel>> GetAllEmployeesAsync(Options options)
     {
-        throw new NotImplementedException();
+        object employees = _employeeRepository
+            .SelectAll()
+            .ToPagedResultAsync(options);
+        return Task.FromResult<PagedResult<EmployeeResponseModel>>(_mapper.Map<PagedResult<EmployeeResponseModel>>(employees));
     }
 
-    public List<Employee> GetAllWithIEnumerable()
+    // public async Task<> GetAllIncludedAsync()
+    // {
+    //     
+    // }
+    public async Task<UpdateEmployeeResponseModel> UpdateEmployeeAsync(Guid id, UpdateEmployeeModel updateEmployeeModel)
     {
-        throw new NotImplementedException();
+        var employee =  _employeeRepository.SelectAll().FirstOrDefault(x => x.Id == id);
+        employee.Position = updateEmployeeModel.Position;
+        employee.Salary = updateEmployeeModel.Salary;
+        employee.HireDate = updateEmployeeModel.HireDate;
+        return new UpdateEmployeeResponseModel()
+        {
+            Id = (await _employeeRepository.UpdateAsync(employee)).Id
+        };
     }
-
-    public Task<PagedResult<Employee>> GetAllAsync(Options options)
+    
+    public async Task<BaseResponseModel> DeleteEmployeeAsync(Guid id)
     {
-        throw new NotImplementedException();
-    }
+        var employee = _employeeRepository.SelectAll()
+            .FirstOrDefault(d => d.Id == id);
+        await _employeeRepository.DeleteAsync(employee);
+        await _employeeRepository.SaveChangesAsync();
+        return new BaseResponseModel();
 
-    public Task<PagedResult<EmployeeResponseModel>> GetAllDTOAsync(Options options)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<UpdateEmployeeResponseModel> UpdateAsync(Guid id, UpdateEmployeeModel updateEmployeeModel)
-    {
-        throw new NotImplementedException();
     }
 }

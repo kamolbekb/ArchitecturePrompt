@@ -19,5 +19,26 @@
   <ItemGroup>
     <ProjectReference Include="..\N-Tier.DataAccess\N-Tier.DataAccess.csproj" />
   </ItemGroup>
+	
+  <ItemGroup>
+    <Folder Include="DataTransferObjects\Contact\" />
+    <Folder Include="DataTransferObjects\Diary\" />
+    <Folder Include="DataTransferObjects\DiaryRecord\" />
+    <Folder Include="DataTransferObjects\Employee\" />
+    <Folder Include="DataTransferObjects\Exam\" />
+    <Folder Include="DataTransferObjects\Group\" />
+    <Folder Include="DataTransferObjects\Guardian\" />
+    <Folder Include="DataTransferObjects\Info\" />
+    <Folder Include="DataTransferObjects\Lesson\" />
+    <Folder Include="DataTransferObjects\Person\" />
+    <Folder Include="DataTransferObjects\Program\" />
+    <Folder Include="DataTransferObjects\Question\" />
+    <Folder Include="DataTransferObjects\Review\" />
+    <Folder Include="DataTransferObjects\Room\" />
+    <Folder Include="DataTransferObjects\Shift\" />
+    <Folder Include="DataTransferObjects\Student\" />
+    <Folder Include="DataTransferObjects\Subject\" />
+    <Folder Include="DataTransferObjects\Teacher\" />
+  </ItemGroup>
 
 </Project>

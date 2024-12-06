@@ -1,48 +1,76 @@
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using N_Tier.Application.Extensions;
 using N_Tier.Application.Models;
 using N_Tier.Application.Models.Subject;
 using N_Tier.Core.Entities;
+using N_Tier.DataAccess.Repositories;
 
 namespace N_Tier.Application.Services.Impl;
 
 public class SubjectService : ISubjectService
 {
-    public Task<CreateSubjectResponseModel> CreateAsync(CreateSubjectModel createSubjectModel)
+    private readonly IMapper _mapper;
+    private readonly ISubjectRepository _subjectRepository;
+
+    public SubjectService(IMapper mapper, ISubjectRepository subjectRepository)
     {
-        throw new NotImplementedException();
+        _mapper = mapper;
+        _subjectRepository = subjectRepository;
     }
 
-    public Task<BaseResponseModel> DeleteAsync(Guid id)
+    public async Task<CreateSubjectResponseModel> CreateSubjectAsync(CreateSubjectModel createSubjectModel)
     {
-        throw new NotImplementedException();
+        var subject = _mapper.Map<Subject>(createSubjectModel);
+        var addedSubject = await _subjectRepository.InsertAsync(subject);
+        return new CreateSubjectResponseModel
+        {
+            Id = addedSubject.Id,
+        };
+    }
+    
+    public async Task<Subject> GetSubjectAsync(Guid subjectId)
+    {
+        var storageSubject = await _subjectRepository
+            .SelectByIdAsync(subjectId);
+
+        return await Task.FromResult(storageSubject);
     }
 
-    public Task<IEnumerable<SubjectResponseModel>> GetAllAsync()
+    public async Task<IEnumerable<SubjectResponseModel>> GetAllSubjectsAsync()
     {
-        throw new NotImplementedException();
+        var subjects = _subjectRepository
+            .SelectAll();
+        return await Task.FromResult(_mapper.Map<IEnumerable<SubjectResponseModel>>(subjects));
     }
 
-    public Task<List<Subject>> GetAllWithIQueryableAsync()
+    public Task<PagedResult<SubjectResponseModel>> GetAllSubjectsAsync(Options options)
     {
-        throw new NotImplementedException();
+        object subjects = _subjectRepository
+            .SelectAll()
+            .ToPagedResultAsync(options);
+        return Task.FromResult<PagedResult<SubjectResponseModel>>(_mapper.Map<PagedResult<SubjectResponseModel>>(subjects));
     }
 
-    public List<Subject> GetAllWithIEnumerable()
+    public async Task<UpdateSubjectResponseModel> UpdateSubjectAsync(Guid id, UpdateSubjectModel updateSubjectModel)
     {
-        throw new NotImplementedException();
+        var subject =  _subjectRepository.SelectAll().FirstOrDefault(x => x.Id == id);
+        subject.Title = updateSubjectModel.Title;
+        subject.Descriprion = updateSubjectModel.Descriprion;
+        subject.TeacherId = updateSubjectModel.TeacherId;
+        return new UpdateSubjectResponseModel()
+        {
+            Id = (await _subjectRepository.UpdateAsync(subject)).Id
+        };
     }
 
-    public Task<PagedResult<Subject>> GetAllAsync(Options options)
+    public async Task<BaseResponseModel> DeleteSubjectAsync(Guid id)
     {
-        throw new NotImplementedException();
-    }
+        var subject = _subjectRepository.SelectAll()
+            .FirstOrDefault(d => d.Id == id);
+        await _subjectRepository.DeleteAsync(subject);
+        await _subjectRepository.SaveChangesAsync();
+        return new BaseResponseModel();
 
-    public Task<PagedResult<SubjectResponseModel>> GetAllDTOAsync(Options options)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<UpdateSubjectResponseModel> UpdateAsync(Guid id, UpdateSubjectModel updateSubjectModel)
-    {
-        throw new NotImplementedException();
     }
 }

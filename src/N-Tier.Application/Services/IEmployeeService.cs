@@ -6,14 +6,13 @@ namespace N_Tier.Application.Services;
 
 public interface IEmployeeService
 {
-    Task<CreateEmployeeResponseModel> CreateAsync(CreateEmployeeModel createEmployeeModel);
-
-    Task<BaseResponseModel> DeleteAsync(Guid id);
-
+    Task<CreateEmployeeResponseModel> CreateEmployeeAsync(CreateEmployeeModel createEmployeeModel);
+    Task<Employee> GetEmployeeAsync(Guid id);
     Task<IEnumerable<EmployeeResponseModel>> GetAllAsync();
-    Task<List<Employee>> GetAllWithIQueryableAsync();
-    List<Employee> GetAllWithIEnumerable();
-    Task<PagedResult<Employee>> GetAllAsync(Options options);
-    Task<PagedResult<EmployeeResponseModel>> GetAllDTOAsync(Options options);
-    Task<UpdateEmployeeResponseModel> UpdateAsync(Guid id, UpdateEmployeeModel updateEmployeeModel);
+    //Task<List<Employee>> GetAllWithIQueryableAsync();
+    //List<Employee> GetAllWithIEnumerable();
+    //Task<PagedResult<Employee>> GetAllAsync(Options options);
+    Task<PagedResult<EmployeeResponseModel>> GetAllEmployeesAsync(Options options);
+    Task<UpdateEmployeeResponseModel> UpdateEmployeeAsync(Guid id, UpdateEmployeeModel updateEmployeeModel);
+    Task<BaseResponseModel> DeleteEmployeeAsync(Guid id);
 }

@@ -1,48 +1,75 @@
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using N_Tier.Application.Extensions;
 using N_Tier.Application.Models;
 using N_Tier.Application.Models.Group;
 using N_Tier.Core.Entities;
+using N_Tier.DataAccess.Repositories;
 
 namespace N_Tier.Application.Services.Impl;
 
 public class GroupService : IGroupService
 {
-    public Task<CreateGroupResponseModel> CreateAsync(CreateGroupModel createGroupModel)
+    private readonly IMapper _mapper;
+    private readonly IGroupRepository _groupRepository;
+
+    public GroupService(IMapper mapper, IGroupRepository groupRepository)
     {
-        throw new NotImplementedException();
+        _mapper = mapper;
+        _groupRepository = groupRepository;
     }
 
-    public Task<BaseResponseModel> DeleteAsync(Guid id)
+    public async Task<CreateGroupResponseModel> CreateGroupAsync(CreateGroupModel createGroupModel)
     {
-        throw new NotImplementedException();
+        var group = _mapper.Map<Group>(createGroupModel);
+        var addedGroup = await _groupRepository.InsertAsync(group);
+        return new CreateGroupResponseModel
+        {
+            Id = addedGroup.Id,
+        };
+    }
+    
+    public async Task<Group> GetGroupAsync(Guid groupId)
+    {
+        var storageGroup = await _groupRepository
+            .SelectByIdAsync(groupId);
+
+        return await Task.FromResult(storageGroup);
     }
 
-    public Task<IEnumerable<GroupResponseModel>> GetAllAsync()
+    public async Task<IEnumerable<GroupResponseModel>> GetAllGroupsAsync()
     {
-        throw new NotImplementedException();
+        var groups = _groupRepository
+            .SelectAll();
+        return await Task.FromResult(_mapper.Map<IEnumerable<GroupResponseModel>>(groups));
     }
 
-    public Task<List<Group>> GetAllWithIQueryableAsync()
+    public Task<PagedResult<GroupResponseModel>> GetAllGroupsAsync(Options options)
     {
-        throw new NotImplementedException();
+        object groups = _groupRepository
+            .SelectAll()
+            .ToPagedResultAsync(options);
+        return Task.FromResult<PagedResult<GroupResponseModel>>(_mapper.Map<PagedResult<GroupResponseModel>>(groups));
     }
 
-    public List<Group> GetAllWithIEnumerable()
+    public async Task<UpdateGroupResponseModel> UpdateGroupAsync(Guid id, UpdateGroupModel updateGroupModel)
     {
-        throw new NotImplementedException();
+        var group =  _groupRepository.SelectAll().FirstOrDefault(x => x.Id == id);
+        group.Title = updateGroupModel.Title;
+        group.StudentCount = updateGroupModel.StudentCount;
+        return new UpdateGroupResponseModel()
+        {
+            Id = (await _groupRepository.UpdateAsync(group)).Id
+        };
     }
 
-    public Task<PagedResult<Group>> GetAllAsync(Options options)
+    public async Task<BaseResponseModel> DeleteGroupAsync(Guid id)
     {
-        throw new NotImplementedException();
-    }
+        var group = _groupRepository.SelectAll()
+            .FirstOrDefault(d => d.Id == id);
+        await _groupRepository.DeleteAsync(group);
+        await _groupRepository.SaveChangesAsync();
+        return new BaseResponseModel();
 
-    public Task<PagedResult<GroupResponseModel>> GetAllDTOAsync(Options options)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<UpdateGroupResponseModel> UpdateAsync(Guid id, UpdateGroupModel updateGroupModel)
-    {
-        throw new NotImplementedException();
     }
 }

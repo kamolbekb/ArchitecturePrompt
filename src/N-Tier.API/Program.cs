@@ -1,5 +1,6 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.EntityFrameworkCore;
 using N_Tier.API;
 using N_Tier.API.Filters;
 using N_Tier.API.Middleware;
@@ -17,8 +18,11 @@ builder.Services.AddControllers(
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining(typeof(IValidationsMarker));
 
-builder.Services.AddSwagger();
+builder.Services.AddDbContext<DbContext>(options =>
+    options.UseNpgsql("ConnectionString"));
 
+builder.Services.AddSwagger();
+   
 builder.Services.AddDataAccess(builder.Configuration)
     .AddApplication(builder.Environment);
 

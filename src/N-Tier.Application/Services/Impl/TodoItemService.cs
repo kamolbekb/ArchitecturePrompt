@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using N_Tier.Application.Models;
 using N_Tier.Application.Models.TodoItem;
 using N_Tier.Core.Entities;
@@ -24,7 +25,7 @@ public class TodoItemService : ITodoItemService
     public async Task<IEnumerable<TodoItemResponseModel>> GetAllByListIdAsync(Guid id,
         CancellationToken cancellationToken = default)
     {
-        var todoItems = await _todoItemRepository.GetAllAsync(ti => ti.List.Id == id);
+        var todoItems = _todoItemRepository.SelectAll;
 
         return _mapper.Map<IEnumerable<TodoItemResponseModel>>(todoItems);
     }
@@ -32,21 +33,21 @@ public class TodoItemService : ITodoItemService
     public async Task<CreateTodoItemResponseModel> CreateAsync(CreateTodoItemModel createTodoItemModel,
         CancellationToken cancellationToken = default)
     {
-        var todoList = await _todoListRepository.GetFirstAsync(tl => tl.Id == createTodoItemModel.TodoListId);
+        var todoList =  _todoListRepository.SelectAll().FirstOrDefault(tl => tl.Id == createTodoItemModel.TodoListId);
         var todoItem = _mapper.Map<TodoItem>(createTodoItemModel);
 
         todoItem.List = todoList;
 
         return new CreateTodoItemResponseModel
         {
-            Id = (await _todoItemRepository.AddAsync(todoItem)).Id
+            Id = (await _todoItemRepository.InsertAsync(todoItem)).Id
         };
     }
 
     public async Task<UpdateTodoItemResponseModel> UpdateAsync(Guid id, UpdateTodoItemModel updateTodoItemModel,
         CancellationToken cancellationToken = default)
     {
-        var todoItem = await _todoItemRepository.GetFirstAsync(ti => ti.Id == id);
+        var todoItem =  _todoItemRepository.SelectAll().FirstOrDefault(ti => ti.Id == id);
 
         _mapper.Map(updateTodoItemModel, todoItem);
 
@@ -58,7 +59,7 @@ public class TodoItemService : ITodoItemService
 
     public async Task<BaseResponseModel> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var todoItem = await _todoItemRepository.GetFirstAsync(ti => ti.Id == id);
+        var todoItem = await _todoItemRepository.SelectAll().FirstOrDefaultAsync(ti => ti.Id == id);
 
         return new BaseResponseModel
         {

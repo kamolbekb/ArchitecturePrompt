@@ -5,14 +5,12 @@ namespace N_Tier.Application.Services;
 
 public interface ISubjectService
 {
-    Task<CreateSubjectResponseModel> CreateAsync(CreateSubjectModel createSubjectModel);
-
-    Task<BaseResponseModel> DeleteAsync(Guid id);
-
-    Task<IEnumerable<SubjectResponseModel>> GetAllAsync();
-    Task<List<Subject>> GetAllWithIQueryableAsync();
-    List<Subject> GetAllWithIEnumerable();
-    Task<PagedResult<Subject>> GetAllAsync(Options options);
-    Task<PagedResult<SubjectResponseModel>> GetAllDTOAsync(Options options);
-    Task<UpdateSubjectResponseModel> UpdateAsync(Guid id, UpdateSubjectModel updateSubjectModel);
+    Task<CreateSubjectResponseModel> CreateSubjectAsync(CreateSubjectModel createSubjectModel);
+    Task<Subject> GetSubjectAsync(Guid subjectId);
+    Task<IEnumerable<SubjectResponseModel>> GetAllSubjectsAsync();
+    //Task<List<Subject>> GetAllWithIQueryableAsync();
+    //Task<PagedResult<Subject>> GetAllAsync(Options options);
+    Task<PagedResult<SubjectResponseModel>> GetAllSubjectsAsync(Options options);
+    Task<UpdateSubjectResponseModel> UpdateSubjectAsync(Guid id, UpdateSubjectModel updateSubjectModel);
+    Task<BaseResponseModel> DeleteSubjectAsync(Guid id);
 }

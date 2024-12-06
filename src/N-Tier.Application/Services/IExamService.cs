@@ -6,14 +6,12 @@ namespace N_Tier.Application.Services;
 
 public interface IExamService
 {
-    Task<CreateExamResponseModel> CreateAsync(CreateExamModel createExamModel);
-
-    Task<BaseResponseModel> DeleteAsync(Guid id);
-
-    Task<IEnumerable<ExamResponseModel>> GetAllAsync();
-    Task<List<Exam>> GetAllWithIQueryableAsync();
-    List<Exam> GetAllWithIEnumerable();
-    Task<PagedResult<Exam>> GetAllAsync(Options options);
-    Task<PagedResult<ExamResponseModel>> GetAllDTOAsync(Options options);
-    Task<UpdateExamResponseModel> UpdateAsync(Guid id, UpdateExamModel updateTodoListModel);
+    Task<CreateExamResponseModel> CreateExamAsync(CreateExamModel createExamModel);
+    Task<Exam> GetExamAsync(Guid examId);
+    Task<IEnumerable<ExamResponseModel>> GetAllExamsAsync();
+    //Task<List<Exam>> GetAllWithIQueryableAsync();
+    //Task<PagedResult<Exam>> GetAllAsync(Options options);
+    Task<PagedResult<ExamResponseModel>> GetAllExamsAsync(Options options);
+    Task<UpdateExamResponseModel> UpdateExamAsync(Guid id, UpdateExamModel updateExamModel);
+    Task<BaseResponseModel> DeleteExamAsync(Guid id);
 }

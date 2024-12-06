@@ -6,14 +6,12 @@ namespace N_Tier.Application.Services;
 
 public interface IRoomService
 {
-    Task<CreateRoomResponseModel> CreateAsync(CreateRoomModel createRoomModel);
-
-    Task<BaseResponseModel> DeleteAsync(Guid id);
-
-    Task<IEnumerable<RoomResponseModel>> GetAllAsync();
-    Task<List<Room>> GetAllWithIQueryableAsync();
-    List<Room> GetAllWithIEnumerable();
-    Task<PagedResult<Room>> GetAllAsync(Options options);
-    Task<PagedResult<RoomResponseModel>> GetAllDTOAsync(Options options);
-    Task<UpdateRoomResponseModel> UpdateAsync(Guid id, UpdateRoomModel updateRoomModel);
+    Task<CreateRoomResponseModel> CreateRoomAsync(CreateRoomModel createRoomModel);
+    Task<Room> GetRoomAsync(Guid contactId);
+    Task<IEnumerable<RoomResponseModel>> GetAllRoomsAsync();
+    //Task<List<Room>> GetAllWithIQueryableAsync();
+    //Task<PagedResult<Room>> GetAllAsync(Options options);
+    Task<PagedResult<RoomResponseModel>> GetAllRoomsAsync(Options options);
+    Task<UpdateRoomResponseModel> UpdateRoomAsync(Guid id, UpdateRoomModel updateRoomModel);
+    Task<BaseResponseModel> DeleteRoomAsync(Guid id);
 }

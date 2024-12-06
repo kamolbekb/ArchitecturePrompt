@@ -6,14 +6,12 @@ namespace N_Tier.Application.Services;
 
 public interface IGroupService
 {
-    Task<CreateGroupResponseModel> CreateAsync(CreateGroupModel createGroupModel);
-
-    Task<BaseResponseModel> DeleteAsync(Guid id);
-
-    Task<IEnumerable<GroupResponseModel>> GetAllAsync();
-    Task<List<Group>> GetAllWithIQueryableAsync();
-    List<Group> GetAllWithIEnumerable();
-    Task<PagedResult<Group>> GetAllAsync(Options options);
-    Task<PagedResult<GroupResponseModel>> GetAllDTOAsync(Options options);
-    Task<UpdateGroupResponseModel> UpdateAsync(Guid id, UpdateGroupModel updateGroupModel);
+    Task<CreateGroupResponseModel> CreateGroupAsync(CreateGroupModel createGroupModel);
+    Task<Group> GetGroupAsync(Guid groupId);
+    Task<IEnumerable<GroupResponseModel>> GetAllGroupsAsync();
+    //Task<List<Group>> GetAllWithIQueryableAsync();
+    //Task<PagedResult<Group>> GetAllAsync(Options options);
+    Task<PagedResult<GroupResponseModel>> GetAllGroupsAsync(Options options);
+    Task<UpdateGroupResponseModel> UpdateGroupAsync(Guid id, UpdateGroupModel updateGroupModel);
+    Task<BaseResponseModel> DeleteGroupAsync(Guid id);
 }

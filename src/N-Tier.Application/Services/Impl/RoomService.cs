@@ -1,48 +1,76 @@
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using N_Tier.Application.Extensions;
 using N_Tier.Application.Models;
 using N_Tier.Application.Models.Room;
 using N_Tier.Core.Entities;
+using N_Tier.DataAccess.Repositories;
 
 namespace N_Tier.Application.Services.Impl;
 
 public class RoomService : IRoomService
 {
-    public Task<CreateRoomResponseModel> CreateAsync(CreateRoomModel createRoomModel)
+    private readonly IMapper _mapper;
+    private readonly IRoomRepository _roomRepository;
+
+    public RoomService(IMapper mapper, IRoomRepository roomRepository)
     {
-        throw new NotImplementedException();
+        _mapper = mapper;
+        _roomRepository = roomRepository;
     }
 
-    public Task<BaseResponseModel> DeleteAsync(Guid id)
+    public async Task<CreateRoomResponseModel> CreateRoomAsync(CreateRoomModel createRoomModel)
     {
-        throw new NotImplementedException();
+        var room = _mapper.Map<Room>(createRoomModel);
+        var addedRoom = await _roomRepository.InsertAsync(room);
+        return new CreateRoomResponseModel
+        {
+            Id = addedRoom.Id,
+        };
+    }
+    
+    public async Task<Room> GetRoomAsync(Guid roomId)
+    {
+        var storageRoom = await _roomRepository
+            .SelectByIdAsync(roomId);
+
+        return await Task.FromResult(storageRoom);
     }
 
-    public Task<IEnumerable<RoomResponseModel>> GetAllAsync()
+    public async Task<IEnumerable<RoomResponseModel>> GetAllRoomsAsync()
     {
-        throw new NotImplementedException();
+        var rooms = _roomRepository
+            .SelectAll();
+        return await Task.FromResult(_mapper.Map<IEnumerable<RoomResponseModel>>(rooms));
     }
 
-    public Task<List<Room>> GetAllWithIQueryableAsync()
+    public Task<PagedResult<RoomResponseModel>> GetAllRoomsAsync(Options options)
     {
-        throw new NotImplementedException();
+        object rooms = _roomRepository
+            .SelectAll()
+            .ToPagedResultAsync(options);
+        return Task.FromResult<PagedResult<RoomResponseModel>>(_mapper.Map<PagedResult<RoomResponseModel>>(rooms));
     }
 
-    public List<Room> GetAllWithIEnumerable()
+    public async Task<UpdateRoomResponseModel> UpdateRoomAsync(Guid id, UpdateRoomModel updateRoomModel)
     {
-        throw new NotImplementedException();
+        var room =  _roomRepository.SelectAll().FirstOrDefault(x => x.Id == id);
+        room.Shift = updateRoomModel.Shift;
+        room.Capacity = updateRoomModel.Capacity;
+        room.Name = updateRoomModel.Name;
+        return new UpdateRoomResponseModel()
+        {
+            Id = (await _roomRepository.UpdateAsync(room)).Id
+        };
     }
 
-    public Task<PagedResult<Room>> GetAllAsync(Options options)
+    public async Task<BaseResponseModel> DeleteRoomAsync(Guid id)
     {
-        throw new NotImplementedException();
-    }
+        var room = _roomRepository.SelectAll()
+            .FirstOrDefault(d => d.Id == id);
+        await _roomRepository.DeleteAsync(room);
+        await _roomRepository.SaveChangesAsync();
+        return new BaseResponseModel();
 
-    public Task<PagedResult<RoomResponseModel>> GetAllDTOAsync(Options options)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<UpdateRoomResponseModel> UpdateAsync(Guid id, UpdateRoomModel updateRoomModel)
-    {
-        throw new NotImplementedException();
     }
 }
