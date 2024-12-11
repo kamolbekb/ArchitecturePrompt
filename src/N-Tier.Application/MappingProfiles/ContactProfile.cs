@@ -11,5 +11,6 @@ public class ContactProfile : Profile
         CreateMap<CreateContactModel, Contact>();
 
         CreateMap<Contact, ContactResponseModel>();
+        CreateMap<UpdateContactModel, Contact>();
     }
 }

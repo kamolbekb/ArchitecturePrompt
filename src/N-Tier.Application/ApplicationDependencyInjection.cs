@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using N_Tier.Application.Common.Email;
+using N_Tier.Application.Helpers;
 using N_Tier.Application.MappingProfiles;
 using N_Tier.Application.Services;
 using N_Tier.Application.Services.DevImpl;
@@ -27,9 +28,7 @@ public static class ApplicationDependencyInjection
 
     private static void AddServices(this IServiceCollection services, IWebHostEnvironment env)
     {
-        services.AddScoped<IWeatherForecastService, WeatherForecastService>();
-        services.AddScoped<ITodoListService, TodoListService>();
-        services.AddScoped<ITodoItemService, TodoItemService>();
+        services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<IContactService, ContactService>();
         services.AddScoped<IDiaryRecordService, DiaryRecordService>();
         services.AddScoped<IDiaryService, DiaryService>();
@@ -48,10 +47,10 @@ public static class ApplicationDependencyInjection
         services.AddScoped<IStudentService, StudentService>();
         services.AddScoped<ISubjectService, SubjectService>();
         services.AddScoped<ITeacherService, TeacherService>();
-        
-        services.AddScoped<IUserService, UserService>();
         services.AddScoped<IClaimService, ClaimService>();
         services.AddScoped<ITemplateService, TemplateService>();
+        
+        services.AddScoped<JwtHelper>();
 
         if (env.IsDevelopment())
             services.AddScoped<IEmailService, DevEmailService>();

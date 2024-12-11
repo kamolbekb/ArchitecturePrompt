@@ -55,12 +55,11 @@ public class ReviewService : IReviewService
     public async Task<UpdateReviewResponseModel> UpdateReviewAsync(Guid id, UpdateReviewModel updateReviewModel)
     {
         var review =  _reviewRepository.SelectAll().FirstOrDefault(x => x.Id == id);
-        review.PersonId = updateReviewModel.PersonId;
-        review.Content = updateReviewModel.Content;
-        review.Time = updateReviewModel.Time;
+        _mapper.Map(updateReviewModel, review);
+        var updatedReview = await _reviewRepository.UpdateAsync(review);
         return new UpdateReviewResponseModel()
         {
-            Id = (await _reviewRepository.UpdateAsync(review)).Id
+            Id = (await _reviewRepository.UpdateAsync(updatedReview)).Id
         };
     }
 

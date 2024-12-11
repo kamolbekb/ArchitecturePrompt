@@ -9,7 +9,7 @@ public class TeacherProfile : Profile
     public TeacherProfile()
     {
         CreateMap<CreateTeacherModel, Teacher>();
-
+        CreateMap<UpdateTeacherModel, Teacher>();
         CreateMap<Teacher, TeacherResponseModel>();
     }
 }

@@ -12,7 +12,7 @@ public interface IEmployeeService
     //Task<List<Employee>> GetAllWithIQueryableAsync();
     //List<Employee> GetAllWithIEnumerable();
     //Task<PagedResult<Employee>> GetAllAsync(Options options);
-    Task<PagedResult<EmployeeResponseModel>> GetAllEmployeesAsync(Options options);
+    Task<List<Employee>> GetAllWithDetailsAsync();
     Task<UpdateEmployeeResponseModel> UpdateEmployeeAsync(Guid id, UpdateEmployeeModel updateEmployeeModel);
     Task<BaseResponseModel> DeleteEmployeeAsync(Guid id);
 }

@@ -1,12 +1,38 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using N_Tier.Core.Entities.User;
 using N_Tier.DataAccess.Identity;
 
 namespace N_Tier.Application.Helpers;
 
-public static class JwtHelper
+public class JwtHelper
 {
-    public static string GenerateToken(ApplicationUser user, IConfiguration configuration)
+    private readonly IOptions<AuthSettings> options;
+
+    public JwtHelper(IOptions<AuthSettings> options)
     {
+        this.options = options;
+    }
+    public string  GenerateToken(Account account)
+    {
+        var claims = new List<Claim>
+        {
+            new Claim("userName", account.UserName),
+            new Claim("firstName", account.FirstName),
+            new Claim("id", account.Id.ToString())
+        };
+
+        var jwtToken = new JwtSecurityToken(
+            expires: DateTime.UtcNow.Add(options.Value.Expires),
+            claims: claims,
+            signingCredentials:
+            new SigningCredentials(
+                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.Value.SecretKey)),
+                SecurityAlgorithms.HmacSha256Signature)); 
         ////var secretKey = configuration.GetValue<string>("JwtConfiguration:SecretKey");
 
         ////var key = Encoding.ASCII.GetBytes(secretKey);
@@ -30,6 +56,6 @@ public static class JwtHelper
 
         ////return tokenHandler.WriteToken(token);
 
-        return "";
+        return new JwtSecurityTokenHandler().WriteToken(jwtToken);
     }
 }

@@ -55,12 +55,11 @@ public class ProgramService : IProgramService
     public async Task<UpdateProgramResponseModel> UpdateProgramAsync(Guid id, UpdateProgramModel updateProgramModel)
     {
         var program =  _programRepository.SelectAll().FirstOrDefault(x => x.Id == id);
-        program.Title = updateProgramModel.Title;
-        program.Content = updateProgramModel.Content;
-        program.Price = updateProgramModel.Price;
+        _mapper.Map(updateProgramModel, program);
+        var updatedProgram = await _programRepository.UpdateAsync(program);
         return new UpdateProgramResponseModel()
         {
-            Id = (await _programRepository.UpdateAsync(program)).Id
+            Id = (await _programRepository.UpdateAsync(updatedProgram)).Id
         };
     }
 

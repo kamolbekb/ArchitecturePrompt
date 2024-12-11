@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using N_Tier.Application.Models;
 using N_Tier.Application.Models.Diary;
 using N_Tier.Application.Services;
+using N_Tier.Core.Entities;
 
 namespace N_Tier.API.Controllers;
 [AllowAnonymous]
@@ -24,11 +25,16 @@ public class DiaryController : ApiController
 
     [HttpGet]
     [Route("AllDiarys")]
-    public async Task<IActionResult> GetDiarysAsync()
+    public async Task<IActionResult> GetDiariesAsync()
     {
         return Ok(ApiResult<IEnumerable<DiaryResponseModel>>.Success(await _diaryService.GetAllDiarysAsync()));
     }
 
+    [HttpGet("Api/GetDetailed/{userId}")]
+    public async Task<IActionResult> GetAllDetailedDiaries()
+    {
+        return Ok(ApiResult<List<Diary>>.Success(await _diaryService.GetAllWithDetailsAsync()));
+    }
     [HttpPost]
     [Route("AddDiary")]
     public async Task<IActionResult> CreateDiary(CreateDiaryModel model)

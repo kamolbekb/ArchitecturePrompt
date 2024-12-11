@@ -44,25 +44,20 @@ public class DiaryRecordService : IDiaryRecordService
         return await Task.FromResult(_mapper.Map<IEnumerable<DiaryRecordResponseModel>>(diaryRecords));
     }
 
-    public Task<PagedResult<DiaryRecordResponseModel>> GetAllDiaryRecordsAsync(Options options)
+    public async Task<List<DiaryRecord>> GetAllWithDetailsAsync()
     {
-        object diaryRecords = _diaryRecordRepository
-            .SelectAll()
-            .ToPagedResultAsync(options);
-        return Task.FromResult<PagedResult<DiaryRecordResponseModel>>(_mapper.Map<PagedResult<DiaryRecordResponseModel>>(diaryRecords));
+        return await _diaryRecordRepository.SelectAllWithIncludesAsync("Diary");
     }
 
     public async Task<UpdateDiaryRecordResponseModel> UpdateDiaryRecordAsync(Guid id, UpdateDiaryRecordModel updateDiaryRecordModel)
     {
-        var diaryRecord =  _diaryRecordRepository.SelectAll().FirstOrDefault(x => x.Id == id);
-        diaryRecord.DiaryId = updateDiaryRecordModel.DiaryId;
-        diaryRecord.Comment = updateDiaryRecordModel.Comment;
-        diaryRecord.Score = updateDiaryRecordModel.Score;
-        diaryRecord.Date = updateDiaryRecordModel.Date;
-        diaryRecord.SubjectId = updateDiaryRecordModel.SubjectId;
-        return new UpdateDiaryRecordResponseModel()
+        var diaryRecord = _diaryRecordRepository.SelectAll()
+            .FirstOrDefault(d => d.Id == id);
+        _mapper.Map(updateDiaryRecordModel, diaryRecord);
+        var updatedDiaryRecord = await _diaryRecordRepository.UpdateAsync(diaryRecord);
+        return new UpdateDiaryRecordResponseModel
         {
-            Id = (await _diaryRecordRepository.UpdateAsync(diaryRecord)).Id
+            Id = updatedDiaryRecord.Id,
         };
     }
 

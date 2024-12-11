@@ -54,12 +54,13 @@ public class GuardianService : IGuardianService
 
     public async Task<UpdateGuardianResponseModel> UpdateGuardianAsync(Guid id, UpdateGuardianModel updateGuardianModel)
     {
-        var guardian =  _guardianRepository.SelectAll().FirstOrDefault(x => x.Id == id);
-        guardian.PersonId = updateGuardianModel.PersonId;
-        guardian.RelativeType = updateGuardianModel.RelativeType;
+        var guardian =  _guardianRepository.SelectAll()
+            .FirstOrDefault(x => x.Id == id);
+        _mapper.Map(updateGuardianModel, guardian);
+        var updatedGuardian = await _guardianRepository.UpdateAsync(guardian);
         return new UpdateGuardianResponseModel()
         {
-            Id = (await _guardianRepository.UpdateAsync(guardian)).Id
+            Id = (await _guardianRepository.UpdateAsync(updatedGuardian)).Id
         };
     }
 

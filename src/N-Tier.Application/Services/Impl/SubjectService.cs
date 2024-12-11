@@ -54,13 +54,13 @@ public class SubjectService : ISubjectService
 
     public async Task<UpdateSubjectResponseModel> UpdateSubjectAsync(Guid id, UpdateSubjectModel updateSubjectModel)
     {
-        var subject =  _subjectRepository.SelectAll().FirstOrDefault(x => x.Id == id);
-        subject.Title = updateSubjectModel.Title;
-        subject.Descriprion = updateSubjectModel.Descriprion;
-        subject.TeacherId = updateSubjectModel.TeacherId;
+        var subject =  _subjectRepository.SelectAll()
+            .FirstOrDefault(x => x.Id == id);
+        _mapper.Map(updateSubjectModel, subject);
+        var updatedSubject = await _subjectRepository.UpdateAsync(subject);
         return new UpdateSubjectResponseModel()
         {
-            Id = (await _subjectRepository.UpdateAsync(subject)).Id
+            Id = (await _subjectRepository.UpdateAsync(updatedSubject)).Id
         };
     }
 

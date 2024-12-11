@@ -11,7 +11,7 @@ public interface IDiaryService
     Task<IEnumerable<DiaryResponseModel>> GetAllDiarysAsync();
     //Task<List<Diary>> GetAllWithIQueryableAsync();
     //Task<PagedResult<Diary>> GetAllAsync(Options options);
-    Task<PagedResult<DiaryResponseModel>> GetAllDiarysAsync(Options options);
+    Task<List<Diary>> GetAllWithDetailsAsync();
     Task<UpdateDiaryResponseModel> UpdateDiaryAsync(Guid id, UpdateDiaryModel updateDiaryModel);
     Task<BaseResponseModel> DeleteDiaryAsync(Guid id);
 }

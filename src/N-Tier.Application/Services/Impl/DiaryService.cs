@@ -44,21 +44,19 @@ public class DiaryService : IDiaryService
         return await Task.FromResult(_mapper.Map<IEnumerable<DiaryResponseModel>>(diarys));
     }
 
-    public Task<PagedResult<DiaryResponseModel>> GetAllDiarysAsync(Options options)
+    public async Task<List<Diary>> GetAllWithDetailsAsync()
     {
-        object diarys = _diaryRepository
-            .SelectAll()
-            .ToPagedResultAsync(options);
-        return Task.FromResult<PagedResult<DiaryResponseModel>>(_mapper.Map<PagedResult<DiaryResponseModel>>(diarys));
+        return await _diaryRepository.SelectAllWithIncludesAsync("DiaryRecord","Student");
     }
 
     public async Task<UpdateDiaryResponseModel> UpdateDiaryAsync(Guid id, UpdateDiaryModel updateDiaryModel)
     {
-        var diary =  _diaryRepository.SelectAll().FirstOrDefault(x => x.Id == id);
-        diary.StudentId = updateDiaryModel.StudentId;
-        return new UpdateDiaryResponseModel()
+        var diary = _diaryRepository.SelectAll().FirstOrDefault(i=>i.Id == id);
+        _mapper.Map(updateDiaryModel, diary);
+        var updatedDiary = await _diaryRepository.UpdateAsync(diary);
+        return new UpdateDiaryResponseModel
         {
-            Id = (await _diaryRepository.UpdateAsync(diary)).Id
+            Id = updatedDiary.Id,
         };
     }
 

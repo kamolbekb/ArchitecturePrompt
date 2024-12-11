@@ -25,8 +25,7 @@ public static class DataAccessDependencyInjection
 
     private static void AddRepositories(this IServiceCollection services)
     {
-        services.AddScoped<ITodoItemRepository, TodoItemRepository>();
-        services.AddScoped<ITodoListRepository, TodoListRepository>();
+        services.AddScoped<IAccountRepository, AccountRepository>();
         services.AddScoped<IEmployeeRepository, EmployeeRepository>();
         services.AddScoped<IExamRepository, ExamRepository>();
         services.AddScoped<IGroupRepository, GroupRepository>();

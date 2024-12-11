@@ -1,4 +1,5 @@
 using AutoMapper;
+using N_Tier.Application.Models.Contact;
 using N_Tier.Application.Models.Employee;
 using N_Tier.Core.Entities;
 
@@ -9,7 +10,7 @@ public class EmployeeProfile : Profile
     public EmployeeProfile()
     {
         CreateMap<CreateEmployeeModel, Employee>();
-
+        CreateMap<UpdateEmployeeModel, Employee>();
         CreateMap<Employee, EmployeeResponseModel>();
     }
 }

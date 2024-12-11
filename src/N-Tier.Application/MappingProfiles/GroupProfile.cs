@@ -9,7 +9,7 @@ public class GroupProfile : Profile
     public GroupProfile()
     {
         CreateMap<CreateGroupModel, Group>();
-
+        CreateMap<UpdateGroupModel, Group>();
         CreateMap<Group, GroupResponseModel>();
     }
 }

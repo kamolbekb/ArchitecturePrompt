@@ -54,12 +54,14 @@ public class TeacherService : ITeacherService
 
     public async Task<UpdateTeacherResponseModel> UpdateTeacherAsync(Guid id, UpdateTeacherModel updateTeacherModel)
     {
-        var teacher =  _teacherRepository.SelectAll().FirstOrDefault(x => x.Id == id);
-        teacher.EmployeeId = updateTeacherModel.EmployeeId;
-        teacher.SubjectId = updateTeacherModel.SubjectId;
+        var teacher =  _teacherRepository.SelectAll()
+            .FirstOrDefault(x => x.Id == id);
+        _mapper.Map(updateTeacherModel, teacher);
+        var updatedTeacher = await _teacherRepository.UpdateAsync(teacher);
+        
         return new UpdateTeacherResponseModel()
         {
-            Id = (await _teacherRepository.UpdateAsync(teacher)).Id
+            Id = (await _teacherRepository.UpdateAsync(updatedTeacher)).Id
         };
     }
 

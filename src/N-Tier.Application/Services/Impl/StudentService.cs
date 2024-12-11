@@ -54,16 +54,13 @@ public class StudentService : IStudentService
 
     public async Task<UpdateStudentResponseModel> UpdateStudentAsync(Guid id, UpdateStudentModel updateStudentModel)
     {
-        var student =  _studentRepository.SelectAll().FirstOrDefault(x => x.Id == id);
-        student.Payment = updateStudentModel.Payment;
-        student.DiaryId = updateStudentModel.DiaryId;
-        student.GroupId = updateStudentModel.GroupId;
-        student.GuardianId = updateStudentModel.GuardianId;
-        student.PersonId = updateStudentModel.PersonId;
-        student.ProgramId = updateStudentModel.ProgramId;
+        var student =  _studentRepository.SelectAll()
+            .FirstOrDefault(x => x.Id == id);
+        _mapper.Map(updateStudentModel, student);
+        var updatedStudent = await _studentRepository.UpdateAsync(student);
         return new UpdateStudentResponseModel()
         {
-            Id = (await _studentRepository.UpdateAsync(student)).Id
+            Id = (await _studentRepository.UpdateAsync(updatedStudent)).Id
         };
     }
 

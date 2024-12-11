@@ -9,7 +9,7 @@ public class ExamProfile : Profile
     public ExamProfile()
     {
         CreateMap<CreateExamModel, Exam>();
-
+        CreateMap<UpdateExamModel, Exam>();
         CreateMap<Exam, ExamResponseModel>();
     }
 }

@@ -54,15 +54,13 @@ public class ExamService : IExamService
 
     public async Task<UpdateExamResponseModel> UpdateExamAsync(Guid id, UpdateExamModel updateExamModel)
     {
-        var exam =  _examRepository.SelectAll().FirstOrDefault(x => x.Id == id);
-        exam.GroupId = updateExamModel.GroupId;
-        exam.RoomId = updateExamModel.RoomId;
-        exam.SubjectId = updateExamModel.SubjectId;
-        exam.StartTimeAt = updateExamModel.StartTimeAt;
-        exam.EndTimeAt = updateExamModel.EndTimeAt;
-        return new UpdateExamResponseModel()
+        var exam =  _examRepository.SelectAll()
+            .FirstOrDefault(x => x.Id == id);
+        _mapper.Map(updateExamModel, exam);
+        var updatedExam = await _examRepository.UpdateAsync(exam);
+        return new UpdateExamResponseModel
         {
-            Id = (await _examRepository.UpdateAsync(exam)).Id
+            Id = updatedExam.Id,
         };
     }
 

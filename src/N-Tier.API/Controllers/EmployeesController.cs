@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using N_Tier.Application.Models;
 using N_Tier.Application.Models.Employee;
 using N_Tier.Application.Services;
+using N_Tier.Core.Entities;
 
 namespace N_Tier.API.Controllers;
 [AllowAnonymous]
@@ -33,6 +34,12 @@ public class EmployeesController : ApiController
     public async Task<IActionResult> GetAllEmployees()
     {
         return Ok(ApiResult<IEnumerable<EmployeeResponseModel>>.Success(await _employeeService.GetAllAsync()));
+    }
+
+    [HttpGet("api/employees/detailed")]
+    public async Task<IActionResult> GetAllDetailedEmployees()
+    {
+        return Ok(ApiResult<List<Employee>>.Success(await _employeeService.GetAllWithDetailsAsync()));
     }
 
     [HttpPut("api/employees/{id}")]

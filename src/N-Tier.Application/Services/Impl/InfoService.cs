@@ -53,13 +53,13 @@ public class InfoService : IInfoService
 
     public async Task<UpdateInfoResponseModel> UpdateInfoAsync(Guid id, UpdateInfoModel updateInfoModel)
     {
-        var info =  _infoRepository.SelectAll().FirstOrDefault(x => x.Id == id);
-        info.Content = updateInfoModel.Content;
-        info.CountOfStudents = updateInfoModel.CountOfStudents;
-        info.CountOfTeachers = updateInfoModel.CountOfTeachers;
+        var info =  _infoRepository.SelectAll()
+            .FirstOrDefault(x => x.Id == id);
+        _mapper.Map(updateInfoModel, info);
+        var updatedInfo = await _infoRepository.UpdateAsync(info);
         return new UpdateInfoResponseModel()
         {
-            Id = (await _infoRepository.UpdateAsync(info)).Id
+            Id = (await _infoRepository.UpdateAsync(updatedInfo)).Id
         };
     }
 

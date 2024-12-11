@@ -55,12 +55,11 @@ public class LessonService : ILessonService
     public async Task<UpdateLessonResponseModel> UpdateLessonAsync(Guid id, UpdateLessonModel updateLessonModel)
     {
         var lesson =  _lessonRepository.SelectAll().FirstOrDefault(x => x.Id == id);
-        lesson.GroupId = updateLessonModel.GroupId;
-        lesson.Title = updateLessonModel.Title;
-        lesson.SubjectId = updateLessonModel.SubjectId;
+        _mapper.Map(updateLessonModel, lesson);
+        var updatedLesson = await _lessonRepository.UpdateAsync(lesson);
         return new UpdateLessonResponseModel()
         {
-            Id = (await _lessonRepository.UpdateAsync(lesson)).Id
+            Id = (await _lessonRepository.UpdateAsync(updatedLesson)).Id
         };
     }
 

@@ -54,13 +54,13 @@ public class ShiftService : IShiftService
 
     public async Task<UpdateShiftResponseModel> UpdateShiftAsync(Guid id, UpdateShiftModel updateShiftModel)
     {
-        var shift =  _shiftRepository.SelectAll().FirstOrDefault(x => x.Id == id);
-        shift.Title = updateShiftModel.Title;
-        shift.StartAt = updateShiftModel.StartAt;
-        shift.EndAt = updateShiftModel.EndAt;
+        var shift =  _shiftRepository.SelectAll()
+            .FirstOrDefault(x => x.Id == id);
+        _mapper.Map(updateShiftModel, shift);
+        var updatedShift = await _shiftRepository.UpdateAsync(shift);
         return new UpdateShiftResponseModel()
         {
-            Id = (await _shiftRepository.UpdateAsync(shift)).Id
+            Id = (await _shiftRepository.UpdateAsync(updatedShift)).Id
         };
     }
 

@@ -9,7 +9,7 @@ public class SubjectProfile : Profile
     public SubjectProfile()
     {
         CreateMap<CreateSubjectModel, Subject>();
-
+        CreateMap<UpdateSubjectModel, Subject>();
         CreateMap<Subject, SubjectResponseModel>();
     }
 }

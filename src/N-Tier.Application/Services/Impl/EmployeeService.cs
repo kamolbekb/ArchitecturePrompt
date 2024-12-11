@@ -47,12 +47,9 @@ public class EmployeeService : IEmployeeService
         return await Task.FromResult(_mapper.Map<IEnumerable<EmployeeResponseModel>>(employees));
     }
 
-    public Task<PagedResult<EmployeeResponseModel>> GetAllEmployeesAsync(Options options)
+    public async Task<List<Employee>> GetAllWithDetailsAsync()
     {
-        object employees = _employeeRepository
-            .SelectAll()
-            .ToPagedResultAsync(options);
-        return Task.FromResult<PagedResult<EmployeeResponseModel>>(_mapper.Map<PagedResult<EmployeeResponseModel>>(employees));
+        return await _employeeRepository.SelectAllWithIncludesAsync("Person");
     }
 
     // public async Task<> GetAllIncludedAsync()
@@ -61,14 +58,14 @@ public class EmployeeService : IEmployeeService
     // }
     public async Task<UpdateEmployeeResponseModel> UpdateEmployeeAsync(Guid id, UpdateEmployeeModel updateEmployeeModel)
     {
-        var employee =  _employeeRepository.SelectAll().FirstOrDefault(x => x.Id == id);
-        employee.Position = updateEmployeeModel.Position;
-        employee.Salary = updateEmployeeModel.Salary;
-        employee.HireDate = updateEmployeeModel.HireDate;
-        return new UpdateEmployeeResponseModel()
+        var employee= _employeeRepository.SelectAll()
+            .FirstOrDefault(d => d.Id == id);
+        _mapper.Map(updateEmployeeModel, employee);
+        var updatedEmployee = await _employeeRepository.UpdateAsync(employee);
+        return new UpdateEmployeeResponseModel
         {
-            Id = (await _employeeRepository.UpdateAsync(employee)).Id
-        };
+            Id = updatedEmployee.Id,
+        }; 
     }
     
     public async Task<BaseResponseModel> DeleteEmployeeAsync(Guid id)

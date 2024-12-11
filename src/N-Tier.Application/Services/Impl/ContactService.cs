@@ -54,12 +54,13 @@ public class ContactService : IContactService
 
     public async Task<UpdateContactResponseModel> UpdateContactAsync(Guid id, UpdateContactModel updateContactModel)
     {
-        var contact =  _contactRepository.SelectAll().FirstOrDefault(x => x.Id == id);
-        contact.SocialMedia = updateContactModel.SocialMedia;
-        contact.Link = updateContactModel.Link;
-        return new UpdateContactResponseModel()
+        var contact = _contactRepository.SelectAll()
+            .FirstOrDefault(d => d.Id == id);
+        _mapper.Map(updateContactModel, contact);
+        var updatedContact = await _contactRepository.UpdateAsync(contact);
+        return new UpdateContactResponseModel
         {
-            Id = (await _contactRepository.UpdateAsync(contact)).Id
+            Id = updatedContact.Id,
         };
     }
 

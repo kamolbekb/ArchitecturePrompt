@@ -54,12 +54,13 @@ public class GroupService : IGroupService
 
     public async Task<UpdateGroupResponseModel> UpdateGroupAsync(Guid id, UpdateGroupModel updateGroupModel)
     {
-        var group =  _groupRepository.SelectAll().FirstOrDefault(x => x.Id == id);
-        group.Title = updateGroupModel.Title;
-        group.StudentCount = updateGroupModel.StudentCount;
+        var group =  _groupRepository.SelectAll()
+            .FirstOrDefault(x => x.Id == id);
+        _mapper.Map(updateGroupModel, group);
+        var updatedGroup = await _groupRepository.UpdateAsync(group);
         return new UpdateGroupResponseModel()
         {
-            Id = (await _groupRepository.UpdateAsync(group)).Id
+            Id = (await _groupRepository.UpdateAsync(updatedGroup)).Id
         };
     }
 

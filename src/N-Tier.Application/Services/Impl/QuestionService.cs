@@ -55,12 +55,11 @@ public class QuestionService : IQuestionService
     public async Task<UpdateQuestionResponseModel> UpdateQuestionAsync(Guid id, UpdateQuestionModel updateQuestionModel)
     {
         var question =  _questionRepository.SelectAll().FirstOrDefault(x => x.Id == id);
-        question.Email = updateQuestionModel.Email;
-        question.Message = updateQuestionModel.Message;
-        question.Time = updateQuestionModel.Time;
+        _mapper.Map(updateQuestionModel, question);
+        var updatedQuestion = await _questionRepository.UpdateAsync(question);
         return new UpdateQuestionResponseModel()
         {
-            Id = (await _questionRepository.UpdateAsync(question)).Id
+            Id = (await _questionRepository.UpdateAsync(updatedQuestion)).Id
         };
     }
 

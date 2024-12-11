@@ -9,7 +9,7 @@ public class StudentProfile : Profile
     public StudentProfile()
     {
         CreateMap<CreateStudentModel, Student>();
-
+        CreateMap<UpdateStudentModel, Student>();
         CreateMap<Student, StudentResponseModel>();
     }
 }

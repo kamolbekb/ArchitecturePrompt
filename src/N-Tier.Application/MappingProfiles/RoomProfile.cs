@@ -9,7 +9,7 @@ public class RoomProfile : Profile
     public RoomProfile()
     {
         CreateMap<CreateRoomModel, Room>();
-
-        CreateMap<TodoList, RoomResponseModel>();
+        CreateMap<UpdateRoomModel, Room>();
+        CreateMap<Room, RoomResponseModel>();
     }
 }

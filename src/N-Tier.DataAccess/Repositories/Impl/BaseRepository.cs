@@ -31,18 +31,16 @@ public class BaseRepository<TEntity, TKey> : IBaseRepository<TEntity, TKey>
     public async ValueTask<TEntity> SelectByIdAsync(TKey id) =>
         await _appDbContext.Set<TEntity>().FindAsync(id);
 
-    public async ValueTask<TEntity> SelectByIdWithDetailsAsync(
-        Expression<Func<TEntity, bool>> expression,
-        string[] includes = null)
+    public async Task<List<TEntity>> SelectAllWithIncludesAsync(params string[] includes)
     {
-        IQueryable<TEntity> entities = this.SelectAll();
+        IQueryable<TEntity> query = _appDbContext.Set<TEntity>();
 
-        foreach(var include in includes)
+        foreach (var include in includes)
         {
-            entities = entities.Include(include);
+            query = query.Include(include);
         }
 
-        return await entities.FirstOrDefaultAsync(expression);
+        return await query.ToListAsync();
     }
 
     public async ValueTask<TEntity> UpdateAsync(TEntity entity)

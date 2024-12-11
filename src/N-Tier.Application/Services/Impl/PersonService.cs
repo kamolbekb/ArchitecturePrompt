@@ -55,13 +55,11 @@ public class PersonService : IPersonService
     public async Task<UpdatePersonResponseModel> UpdatePersonAsync(Guid id, UpdatePersonModel updatePersonModel)
     {
         var person =  _personRepository.SelectAll().FirstOrDefault(x => x.Id == id);
-        person.Email = updatePersonModel.Email;
-        person.Name = updatePersonModel.Name;
-        person.Image = updatePersonModel.Image;
-        person.Gender = updatePersonModel.Gender;
+        _mapper.Map(updatePersonModel, person);
+        var updatedPerson = await _personRepository.UpdateAsync(person);
         return new UpdatePersonResponseModel()
         {
-            Id = (await _personRepository.UpdateAsync(person)).Id
+            Id = (await _personRepository.UpdateAsync(updatedPerson)).Id
         };
     }
 

@@ -1,10 +1,12 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using N_Tier.API;
 using N_Tier.API.Filters;
 using N_Tier.API.Middleware;
 using N_Tier.Application;
+using N_Tier.Application.Helpers;
 using N_Tier.Application.Models.Validators;
 using N_Tier.DataAccess;
 using N_Tier.DataAccess.Persistence;
@@ -21,7 +23,13 @@ builder.Services.AddValidatorsFromAssemblyContaining(typeof(IValidationsMarker))
 builder.Services.AddDbContext<DbContext>(options =>
     options.UseNpgsql("ConnectionString"));
 
+builder.Services.Configure<AuthSettings>(
+    builder.Configuration.GetSection("JwtConfiguration"));
+
+builder.Services.AddAuth(builder.Configuration);
+
 builder.Services.AddSwagger();
+builder.Services.AddSwaggerGen();
    
 builder.Services.AddDataAccess(builder.Configuration)
     .AddApplication(builder.Environment);
@@ -58,7 +66,6 @@ app.UseMiddleware<PerformanceMiddleware>();
 app.UseMiddleware<TransactionMiddleware>();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
-
 app.MapControllers();
 
 app.Run();

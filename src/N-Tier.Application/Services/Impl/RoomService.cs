@@ -54,13 +54,13 @@ public class RoomService : IRoomService
 
     public async Task<UpdateRoomResponseModel> UpdateRoomAsync(Guid id, UpdateRoomModel updateRoomModel)
     {
-        var room =  _roomRepository.SelectAll().FirstOrDefault(x => x.Id == id);
-        room.Shift = updateRoomModel.Shift;
-        room.Capacity = updateRoomModel.Capacity;
-        room.Name = updateRoomModel.Name;
+        var room =  _roomRepository.SelectAll()
+            .FirstOrDefault(x => x.Id == id);
+        _mapper.Map(updateRoomModel, room);
+        var updatedRoom = await _roomRepository.UpdateAsync(room);
         return new UpdateRoomResponseModel()
         {
-            Id = (await _roomRepository.UpdateAsync(room)).Id
+            Id = (await _roomRepository.UpdateAsync(updatedRoom)).Id
         };
     }
 

@@ -640,63 +640,27 @@ namespace N_Tier.DataAccess.Persistence.Migrations
                     b.ToTable("Teachers");
                 });
 
-            modelBuilder.Entity("N_Tier.Core.Entities.TodoItem", b =>
+            modelBuilder.Entity("N_Tier.Core.Entities.User.Account", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Body")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("character varying(1000)");
-
-                    b.Property<string>("CreatedBy")
+                    b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<bool>("IsDone")
-                        .HasColumnType("boolean");
-
-                    b.Property<Guid>("ListId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("UpdatedBy")
+                    b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime?>("UpdatedOn")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ListId");
-
-                    b.ToTable("TodoItems");
-                });
-
-            modelBuilder.Entity("N_Tier.Core.Entities.TodoList", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Title")
+                    b.Property<string>("UserName")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.ToTable("TodoLists");
+                    b.ToTable("Accounts");
                 });
 
             modelBuilder.Entity("N_Tier.DataAccess.Identity.ApplicationUser", b =>
@@ -717,6 +681,9 @@ namespace N_Tier.DataAccess.Persistence.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("Initials")
+                        .HasColumnType("text");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
@@ -1049,17 +1016,6 @@ namespace N_Tier.DataAccess.Persistence.Migrations
                     b.Navigation("Subject");
                 });
 
-            modelBuilder.Entity("N_Tier.Core.Entities.TodoItem", b =>
-                {
-                    b.HasOne("N_Tier.Core.Entities.TodoList", "List")
-                        .WithMany("Items")
-                        .HasForeignKey("ListId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("List");
-                });
-
             modelBuilder.Entity("N_Tier.Core.Entities.Diary", b =>
                 {
                     b.Navigation("DiaryRecords");
@@ -1113,11 +1069,6 @@ namespace N_Tier.DataAccess.Persistence.Migrations
                 {
                     b.Navigation("Teacher")
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("N_Tier.Core.Entities.TodoList", b =>
-                {
-                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

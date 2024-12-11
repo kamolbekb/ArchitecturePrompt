@@ -6,7 +6,7 @@ using N_Tier.Application.Services;
 using N_Tier.Core.Entities;
 
 namespace N_Tier.API.Controllers;
-[AllowAnonymous]
+
 public class ContactsController : ApiController
 {
     private readonly IContactService _contactService;
