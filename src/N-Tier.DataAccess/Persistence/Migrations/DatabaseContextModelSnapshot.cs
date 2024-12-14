@@ -660,6 +660,9 @@ namespace N_Tier.DataAccess.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserName")
+                        .IsUnique();
+
                     b.ToTable("Accounts");
                 });
 

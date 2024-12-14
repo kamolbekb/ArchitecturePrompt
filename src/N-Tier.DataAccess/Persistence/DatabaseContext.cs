@@ -82,6 +82,11 @@ public class DatabaseContext : IdentityDbContext<ApplicationUser>
         
         builder.Entity<LessonShift>()
             .HasNoKey();
+
+        builder.Entity<Account>()
+            .HasIndex(a => a.UserName)
+            .IsUnique();
+            
         
         builder.Entity<Group>().Ignore(g => g.GroupRooms);
         
