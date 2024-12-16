@@ -16,19 +16,20 @@ public class AccountService : IAccountService
         _jwtHelper = jwtHelper;
     }
 
-    public void Register(string username,string firstname, string password)
+    public void Register(string username, string firstname, string password, string role)
     {
         var newAccount = new Account
         {
             UserName = username,
             FirstName = firstname,
-            Id = Guid.NewGuid()
+            Id = Guid.NewGuid(),
+            Role = role // Assign the provided role
         };
         var passHash = new PasswordHasher<Account>().HashPassword(newAccount, password);
         newAccount.PasswordHash = passHash;
         _accountRepository.Add(newAccount);
-        
     }
+
 
     public string Login(string username, string password)
     {

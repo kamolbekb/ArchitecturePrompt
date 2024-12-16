@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using N_Tier.Application.Models.Auth;
 using N_Tier.Application.Services;
@@ -5,6 +6,7 @@ using N_Tier.Application.Services;
 namespace N_Tier.API.Controllers;
 
 [ApiController]
+[AllowAnonymous]
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
@@ -17,7 +19,7 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public IActionResult Register([FromBody] RegisterUserRequest request)
     {
-        _accountService.Register(request.UserName, request.FirstName, request.Password);
+        _accountService.Register(request.UserName, request.FirstName, request.Password,request.Role);
         return Ok("User created");
     }
 

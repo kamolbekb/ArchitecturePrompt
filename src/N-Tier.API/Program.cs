@@ -38,6 +38,7 @@ builder.Services.AddJwt(builder.Configuration);
 
 builder.Services.AddEmailConfiguration(builder.Configuration);
 
+
 var app = builder.Build();
 
 using var scope = app.Services.CreateScope();
