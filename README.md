@@ -1,5 +1,4 @@
 # N-Tier
 Simple project which build based on N-Tiere architecture.
 
-Imtohonda diagramma qgandim, ssilkasini tashab qoyish esdan chqb ketibti, va qgan diagrammam ochib ketipti
-https://dbdiagram.io/d
+https://dbdiagram.io/d/Online-School-673dee46e9daa85aca1f5054
