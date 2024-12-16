@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
@@ -8,11 +9,10 @@ namespace N_Tier.Application.Helpers;
 
 public static class AuthExtensions
 {
-    public static IServiceCollection AddAuth(this IServiceCollection serviceCollection,
-        IConfiguration configuration)
+    public static IServiceCollection AddAuth(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
-        var authSettings = configuration.GetSection(nameof(AuthSettings)) 
-            .Get<AuthSettings>();
+        var authSettings = configuration.GetSection(nameof(AuthSettings)).Get<AuthSettings>();
+
         serviceCollection.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(o =>
             {
@@ -22,10 +22,20 @@ public static class AuthExtensions
                     ValidateAudience = false,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(authSettings.SecretKey))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authSettings.SecretKey))
                 };
             });
+
+        serviceCollection.AddAuthorization(options =>
+        {
+            options.AddPolicy("SuperAdminOnly", policy =>
+                policy.RequireClaim(ClaimTypes.Role, "SuperAdmin"));
+        });
+        // {
+        //     options.AddPolicy("SuperAdminOnly", policy => policy.RequireRole("SuperAdmin"));
+        // });
+
         return serviceCollection;
     }
+
 }

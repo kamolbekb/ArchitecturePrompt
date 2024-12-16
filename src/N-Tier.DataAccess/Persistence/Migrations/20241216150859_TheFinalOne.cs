@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace N_Tier.DataAccess.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class MigrationUntilProd : Migration
+    public partial class TheFinalOne : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,12 +17,6 @@ namespace N_Tier.DataAccess.Persistence.Migrations
             migrationBuilder.DropTable(
                 name: "TodoLists");
 
-            migrationBuilder.AddColumn<string>(
-                name: "Initials",
-                table: "AspNetUsers",
-                type: "text",
-                nullable: true);
-
             migrationBuilder.CreateTable(
                 name: "Accounts",
                 columns: table => new
@@ -30,7 +24,8 @@ namespace N_Tier.DataAccess.Persistence.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     UserName = table.Column<string>(type: "text", nullable: false),
                     FirstName = table.Column<string>(type: "text", nullable: false),
-                    PasswordHash = table.Column<string>(type: "text", nullable: false)
+                    PasswordHash = table.Column<string>(type: "text", nullable: false),
+                    Role = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -684,10 +679,6 @@ namespace N_Tier.DataAccess.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Persons");
-
-            migrationBuilder.DropColumn(
-                name: "Initials",
-                table: "AspNetUsers");
 
             migrationBuilder.CreateTable(
                 name: "TodoLists",

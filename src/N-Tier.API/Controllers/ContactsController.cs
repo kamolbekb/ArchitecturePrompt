@@ -25,6 +25,7 @@ public class ContactsController : ApiController
 
     [HttpGet]
     [Route("AllContacts")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetContactsAsync()
     {
         return Ok(ApiResult<IEnumerable<ContactResponseModel>>.Success(await _contactService.GetAllContactsAsync()));
@@ -32,6 +33,7 @@ public class ContactsController : ApiController
 
     [HttpPost]
     [Route("AddContact")]
+    [Authorize(Policy = "SuperAdminOnly")]
     public async Task<IActionResult> CreateContact(CreateContactModel model)
     {
         return Ok(await _contactService.CreateContactAsync(model));

@@ -19,11 +19,13 @@ public class JwtHelper
     }
     public string  GenerateToken(Account account)
     {
+        
         var claims = new List<Claim>
         {
             new Claim("userName", account.UserName),
             new Claim("firstName", account.FirstName),
-            new Claim("id", account.Id.ToString())
+            new Claim("id", account.Id.ToString()),
+            new Claim(ClaimTypes.Role, account.Role) // Add role to claims
         };
 
         var jwtToken = new JwtSecurityToken(
@@ -33,29 +35,30 @@ public class JwtHelper
             new SigningCredentials(
                 new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.Value.SecretKey)),
                 SecurityAlgorithms.HmacSha256Signature)); 
-        ////var secretKey = configuration.GetValue<string>("JwtConfiguration:SecretKey");
-
-        ////var key = Encoding.ASCII.GetBytes(secretKey);
-
-        ////var tokenHandler = new JwtSecurityTokenHandler();
-
-        ////var tokenDescriptor = new SecurityTokenDescriptor
-        ////{
-        ////    Subject = new ClaimsIdentity(new[]
-        ////    {
-        ////        new Claim(ClaimTypes.NameIdentifier, user.Id),
-        ////        new Claim(ClaimTypes.Name, user.UserName),
-        ////        new Claim(ClaimTypes.Email, user.Email)
-        ////    }),
-        ////    Expires = DateTime.UtcNow.AddDays(7),
-        ////    SigningCredentials =
-        ////        new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-        ////};
-
-        ////var token = tokenHandler.CreateToken(tokenDescriptor);
-
-        ////return tokenHandler.WriteToken(token);
-
+        ///
         return new JwtSecurityTokenHandler().WriteToken(jwtToken);
     }
 }
+
+////var secretKey = configuration.GetValue<string>("JwtConfiguration:SecretKey");
+
+////var key = Encoding.ASCII.GetBytes(secretKey);
+
+////var tokenHandler = new JwtSecurityTokenHandler();
+
+////var tokenDescriptor = new SecurityTokenDescriptor
+////{
+////    Subject = new ClaimsIdentity(new[]
+////    {
+////        new Claim(ClaimTypes.NameIdentifier, user.Id),
+////        new Claim(ClaimTypes.Name, user.UserName),
+////        new Claim(ClaimTypes.Email, user.Email)
+////    }),
+////    Expires = DateTime.UtcNow.AddDays(7),
+////    SigningCredentials =
+////        new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+////};
+
+////var token = tokenHandler.CreateToken(tokenDescriptor);
+
+////return tokenHandler.WriteToken(token);
