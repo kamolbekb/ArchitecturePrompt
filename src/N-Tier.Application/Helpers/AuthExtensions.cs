@@ -13,28 +13,21 @@ public static class AuthExtensions
     {
         var authSettings = configuration.GetSection(nameof(AuthSettings)).Get<AuthSettings>();
 
-        serviceCollection.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(o =>
+        serviceCollection.AddAuthentication(options => {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(o =>
             {
                 o.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = false,
                     ValidateAudience = false,
                     ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authSettings.SecretKey))
+                    ValidateIssuerSigningKey = false,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Super secret token key"))
                 };
             });
-
-        // serviceCollection.AddAuthorization(options =>
-        // {
-        //     options.AddPolicy("SuperAdminOnly", policy =>
-        //         policy.RequireClaim(ClaimTypes.Role, "SuperAdmin"));
-        // });
-        // {
-        //     options.AddPolicy("SuperAdminOnly", policy => policy.RequireRole("SuperAdmin"));
-        // });
-
         return serviceCollection;
     }
 
