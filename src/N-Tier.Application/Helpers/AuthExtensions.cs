@@ -26,11 +26,11 @@ public static class AuthExtensions
                 };
             });
 
-        serviceCollection.AddAuthorization(options =>
-        {
-            options.AddPolicy("SuperAdminOnly", policy =>
-                policy.RequireClaim(ClaimTypes.Role, "SuperAdmin"));
-        });
+        // serviceCollection.AddAuthorization(options =>
+        // {
+        //     options.AddPolicy("SuperAdminOnly", policy =>
+        //         policy.RequireClaim(ClaimTypes.Role, "SuperAdmin"));
+        // });
         // {
         //     options.AddPolicy("SuperAdminOnly", policy => policy.RequireRole("SuperAdmin"));
         // });

@@ -23,6 +23,10 @@ builder.Services.AddValidatorsFromAssemblyContaining(typeof(IValidationsMarker))
 builder.Services.AddDbContext<DbContext>(options =>
     options.UseNpgsql("ConnectionString"));
 
+builder.Services.AddAuthorization(options=>
+    options.AddPolicy("SuperAdminOnly", policy => 
+        policy.RequireRole("SuperAdmin")));
+
 builder.Services.Configure<AuthSettings>(
     builder.Configuration.GetSection("JwtConfiguration"));
 

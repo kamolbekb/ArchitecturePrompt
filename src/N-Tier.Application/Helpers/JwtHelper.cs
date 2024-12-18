@@ -25,7 +25,7 @@ public class JwtHelper
             new Claim("userName", account.UserName),
             new Claim("firstName", account.FirstName),
             new Claim("id", account.Id.ToString()),
-            new Claim(ClaimTypes.Role, account.Role) // Add role to claims
+            new Claim(ClaimTypes.Role, account.Role.ToString()) // Add role to claims
         };
 
         var jwtToken = new JwtSecurityToken(

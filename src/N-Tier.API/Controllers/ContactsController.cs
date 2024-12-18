@@ -4,6 +4,7 @@ using N_Tier.Application.Models;
 using N_Tier.Application.Models.Contact;
 using N_Tier.Application.Services;
 using N_Tier.Core.Entities;
+using N_Tier.Core.Entities.User;
 
 namespace N_Tier.API.Controllers;
 
