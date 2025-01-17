@@ -11,9 +11,13 @@ public static class AuthExtensions
 {
     public static IServiceCollection AddAuth(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
-        var authSettings = configuration.GetSection(nameof(AuthSettings)).Get<AuthSettings>();
-
-        serviceCollection.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        // var authSettings = configuration.GetSection(nameof(AuthSettings)).Get<AuthSettings>();
+        serviceCollection.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
             .AddJwtBearer(o =>
             {
                 o.TokenValidationParameters = new TokenValidationParameters
@@ -22,20 +26,15 @@ public static class AuthExtensions
                     ValidateAudience = false,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authSettings.SecretKey))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Super secret token key"))
                 };
             });
 
         serviceCollection.AddAuthorization(options =>
         {
-            options.AddPolicy("SuperAdminOnly", policy =>
-                policy.RequireClaim(ClaimTypes.Role, "SuperAdmin"));
+            options.AddPolicy("SuperAdminOnly", policy => { policy.RequireClaim(ClaimTypes.Role, "SuperAdmin"); });
         });
-        // {
-        //     options.AddPolicy("SuperAdminOnly", policy => policy.RequireRole("SuperAdmin"));
-        // });
-
+        
         return serviceCollection;
     }
-
 }

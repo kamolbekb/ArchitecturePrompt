@@ -4,6 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace N_Tier.API.Controllers;
 
 [ApiController]
-[Authorize(Policy = "SuperAdminOnly")]
 [Route("api/[controller]")]
+// [Authorize(Policy = "SuperAdminOnly")]
 public class ApiController : ControllerBase { }

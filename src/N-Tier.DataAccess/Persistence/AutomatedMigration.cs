@@ -13,8 +13,8 @@ public static class AutomatedMigration
 
         if (context.Database.IsNpgsql()) await context.Database.MigrateAsync();
 
-        var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
-
-        await DatabaseContextSeed.SeedDatabaseAsync(context, userManager);
+        // var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+        //
+        // await DatabaseContextSeed.SeedDatabaseAsync(context, userManager);
     }
 }

@@ -5,7 +5,6 @@ using N_Tier.Application.Models.Info;
 using N_Tier.Application.Services;
 
 namespace N_Tier.API.Controllers;
-[AllowAnonymous]
 public class InfosController : ApiController
 {
     private readonly IInfoService _infoService;
@@ -24,6 +23,8 @@ public class InfosController : ApiController
 
     [HttpGet]
     [Route("AllInfos")]
+    [Authorize(Policy = "SuperAdminOnly")]
+    //[Authorize(AuthenticationSchemes = "Bearer")]
     public async Task<IActionResult> GetInfosAsync()
     {
         return Ok(ApiResult<IEnumerable<InfoResponseModel>>.Success(await _infoService.GetAllInfoAsync()));

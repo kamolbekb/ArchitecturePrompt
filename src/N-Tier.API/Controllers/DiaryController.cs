@@ -25,6 +25,7 @@ public class DiaryController : ApiController
 
     [HttpGet]
     [Route("AllDiarys")]
+    [Authorize(Policy = "SuperAdminOnly")]
     public async Task<IActionResult> GetDiariesAsync()
     {
         return Ok(ApiResult<IEnumerable<DiaryResponseModel>>.Success(await _diaryService.GetAllDiarysAsync()));

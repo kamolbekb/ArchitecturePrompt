@@ -16,7 +16,7 @@ public class AccountService : IAccountService
         _jwtHelper = jwtHelper;
     }
 
-    public void Register(string username, string firstname, string password, string role)
+    public void Register(string username, string firstname, string password, Role role)
     {
         var newAccount = new Account
         {
