@@ -23,7 +23,8 @@ public class InfosController : ApiController
 
     [HttpGet]
     [Route("AllInfos")]
-    // [Authorize]
+    [Authorize(Policy = "SuperAdminOnly")]
+    //[Authorize(AuthenticationSchemes = "Bearer")]
     public async Task<IActionResult> GetInfosAsync()
     {
         return Ok(ApiResult<IEnumerable<InfoResponseModel>>.Success(await _infoService.GetAllInfoAsync()));

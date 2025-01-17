@@ -35,7 +35,7 @@ public class JwtHelper
             new SigningCredentials(
                 new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.Value.SecretKey)),
                 SecurityAlgorithms.HmacSha256Signature)); 
-        ///
+        
         return new JwtSecurityTokenHandler().WriteToken(jwtToken);
     }
 }

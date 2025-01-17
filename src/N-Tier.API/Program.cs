@@ -1,7 +1,5 @@
-using System.Security.Claims;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using N_Tier.API;
 using N_Tier.API.Filters;
@@ -24,16 +22,22 @@ builder.Services.AddValidatorsFromAssemblyContaining(typeof(IValidationsMarker))
 builder.Services.AddDbContext<DbContext>(options =>
     options.UseNpgsql("ConnectionString"));
 
+builder.Services.AddAuth(builder.Configuration);
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("SuperAdminOnly", policy =>
+        policy.RequireRole("SuperAdmin"));
+});
+
+
 builder.Services.Configure<AuthSettings>(
     builder.Configuration.GetSection("JwtConfiguration"));
 
-builder.Services.AddAuth(builder.Configuration);
 
 builder.Services.AddSwagger();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddLogging();
-   
 builder.Services.AddDataAccess(builder.Configuration)
     .AddApplication(builder.Environment);
 
